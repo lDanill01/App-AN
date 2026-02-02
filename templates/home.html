@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Página Inicial - Sistema de Gerenciamento{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem 2rem;
+        border-radius: 10px;
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .card {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+    }
+
+    .card-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+    }
+
+    .card p {
+        color: #7f8c8d;
+        line-height: 1.5;
+    }
+
+    .card.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .card.disabled:hover {
+        transform: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .badge {
+        display: inline-block;
+        background-color: #e74c3c;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        margin-left: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Olá, Mundo! 👋</h1>
+    <p>Bem-vindo ao Sistema de Gerenciamento</p>
+</div>
+
+<div class="cards-grid">
+    <!-- Card Produtos -->
+    <a href="{% url 'admin:produtos_produto_changelist' %}" class="card">
+        <div class="card-icon">📦</div>
+        <h3>Produtos</h3>
+        <p>Gerencie seu catálogo de produtos, marcas, espécies, divisões e linhas.</p>
+    </a>
+
+    <!-- Card Calculadora de Dieta -->
+    <div class="card disabled">
+        <div class="card-icon">🥗</div>
+        <h3>Calculadora de Dieta <span class="badge">Em breve</span></h3>
+        <p>Calcule necessidades nutricionais e planeje dietas personalizadas.</p>
+    </div>
+
+    <!-- Card Usuários (apenas para superuser) -->
+    {% if user.is_superuser %}
+    <a href="{% url 'admin:auth_user_changelist' %}" class="card">
+        <div class="card-icon">👥</div>
+        <h3>Usuários</h3>
+        <p>Gerencie usuários do sistema e suas permissões.</p>
+    </a>
+    {% else %}
+    <div class="card disabled">
+        <div class="card-icon">👥</div>
+        <h3>Usuários <span class="badge">Superuser</span></h3>
+        <p>Área restrita para administradores do sistema.</p>
+    </div>
+    {% endif %}
+
+    <!-- Card Portfólio -->
+    <div class="card disabled">
+        <div class="card-icon">💼</div>
+        <h3>Portfólio <span class="badge">Em breve</span></h3>
+        <p>Visualize e gerencie seu portfólio de projetos e serviços.</p>
+    </div>
+
+    <!-- Card FAQ -->
+    <div class="card disabled">
+        <div class="card-icon">❓</div>
+        <h3>FAQ <span class="badge">Em breve</span></h3>
+        <p>Perguntas frequentes e suporte ao usuário.</p>
+    </div>
+
+    <!-- Card Informações de Mercado -->
+    <div class="card disabled">
+        <div class="card-icon">📊</div>
+        <h3>Informações de Mercado <span class="badge">Em breve</span></h3>
+        <p>Acompanhe tendências e dados do mercado em tempo real.</p>
+    </div>
+</div>
+
+{% if not user.is_authenticated %}
+<div style="text-align: center; margin-top: 3rem; padding: 2rem; background: white; border-radius: 10px;">
+    <p style="font-size: 1.1rem; color: #7f8c8d;">
+        <strong>Faça login</strong> para acessar todas as funcionalidades do sistema.
+    </p>
+    <a href="{% url 'admin:index' %}" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 2rem; background: #667eea; color: white; text-decoration: none; border-radius: 5px;">
+        Fazer Login
+    </a>
+</div>
+{% endif %}
+{% endblock %}
