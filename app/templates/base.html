@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock %}</title>
+  <style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #0096c7;
+        color: #fff;
+        text-align: center;
+    }
+
+    footer {
+        background-color: #ccc;
+        color: #333;
+        padding: 20px;
+        text-align: center;
+    }
+
+    nav {
+        background-color: #0096c7;
+        color: #fff;
+        height: 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+
+    nav ul li {
+        margin: 0 10px;
+    }
+
+    nav ul li a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 16px;
+        padding: 15px;
+        transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+        background-color: #32bbe8;
+    }
+
+    nav ul li.active a {
+        background-color: #666;
+    }
+
+    nav ul li.active a:hover {
+        background-color: #999;
+    }
+
+    .header-top {
+        background-color: #0096c7;
+        color: #fff;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-top a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        padding: 6px 12px;
+        border: 1px solid #32bbe8;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .header-top a:hover {
+        background-color: #32bbe8;
+        border-color: #32bbe8;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    {% if user.is_authenticated %}
+    <div class="header-top">
+      <span><strong>Olá, {{ user.username }}</strong></span>
+      <a href="{% url 'logout' %}">Sair</a>
+    </div>
+    {% endif %}
+    <nav>
+      <ul>
+        {% if user.is_authenticated %}
+          <li><a href="{% url 'lista_produtos' %}">Produtos</a></li>
+          {% if user.is_superuser %}
+            <li><a href="{% url 'register' %}">Cadastrar Usuário</a></li>
+            <li><a href="{% url 'admin:index' %}">Portal Administrativo</a></li>
+          {% endif %}
+        {% else %}
+          <li><a href="{% url 'login' %}">Login</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <footer>
+    <p>&copy; Animal Nutrition App</p>
+  </footer>
+</body>
+</html>

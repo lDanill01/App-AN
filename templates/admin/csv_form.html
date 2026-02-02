@@ -1,0 +1,34 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div id="content-main">
+    <h1>{{ title }}</h1>
+    
+    <div class="module">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>Selecione um arquivo CSV para importação</p>
+            <input type="file" name="csv_file" accept=".csv" required>
+            <button type="submit" class="button">Importar</button>
+        </form>
+    </div>
+    
+    <br>
+    
+    <div class="help">
+        <h3>Formato do arquivo CSV:</h3>
+        <p>O arquivo deve conter as seguintes colunas (com cabeçalho):</p>
+        <pre>{{ colunas }}</pre>
+        
+        <h3>Exemplo de arquivo CSV:</h3>
+        <pre>{{ colunas }}
+{{ exemplo }}</pre>
+        
+        {% if observacao %}
+        <p><strong>⚠️ {{ observacao }}</strong></p>
+        {% endif %}
+        
+        <p><strong>Nota:</strong> Se um registro com o mesmo nome já existir, ele será atualizado.</p>
+    </div>
+</div>
+{% endblock %}
