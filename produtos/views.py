@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from produtos.models import Produto
 from django.views import View
+from django.views.generic import DetailView
 
   
 class ProdutosView(View):
@@ -14,3 +15,8 @@ class ProdutosView(View):
         template_name='produtos.html',
         context={'produtos': produtos},
       )
+  
+class ProdutoDetailView(DetailView):
+    model = Produto
+    template_name = 'produto_detail.html'
+    context_object_name = 'produto'

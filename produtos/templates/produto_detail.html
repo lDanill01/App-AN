@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  :root {
+    --green-dark: #1f4f3a;
+    --green-main: #256a4b;
+    --bg-light: #faf9f7;
+    --text-dark: #1d1d1d;
+    --card-radius: 14px;
+  }
+
+  body { background-color: var(--bg-light); }
+
+  .detail-wrapper {
+    min-height: calc(100vh - 160px);
+    display: grid;
+    place-items: center;
+    padding: 30px 16px 60px;
+  }
+
+  .detail-card {
+    width: 100%;
+    max-width: 1000px;
+    background: #fff;
+    border-radius: var(--card-radius);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .detail-header {
+    padding: 22px 24px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .detail-header .thumb {
+    width: 64px; height: 64px;
+    border-radius: 10px;
+    background: #f4f4f4;
+    display: grid; place-items: center;
+    overflow: hidden;
+  }
+  .detail-header .thumb img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+
+  .detail-title {
+    flex: 1;
+  }
+  .detail-title h2 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--text-dark);
+  }
+  .detail-title .meta {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .detail-actions {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .btn {
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 600;
+    transition: transform .05s ease, background .2s ease;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--green-main); color: #fff; }
+  .btn-primary:hover { background: var(--green-dark); }
+  .btn-outline { background: transparent; color: var(--green-main); border: 1px solid var(--green-main); }
+  .btn-outline:hover { background: #e7f3ee; }
+
+  .detail-body {
+    padding: 0; /* o viewer ocupa 100% */
+  }
+
+  /* Viewer responsivo de PDF/Imagem */
+  .techsheet-viewer {
+    width: 100%;
+    min-height: 70vh; /* altura confortável */
+    background: #f7f7f7;
+    display: grid; place-items: center;
+  }
+  .techsheet-frame {
+    width: 100%;
+    height: 80vh; /* ajustável */
+    border: none;
+  }
+  .techsheet-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-height: 80vh;
+    object-fit: contain;
+    background: #fff;
+  }
+
+  .empty-techsheet {
+    padding: 40px 24px;
+    text-align: center;
+    color: #777;
+  }
+
+  @media (max-width: 768px) {
+    .detail-header { padding: 16px; }
+    .detail-title h2 { font-size: 18px; }
+    .techsheet-frame { height: 70vh; }
+  }
+</style>
+
+<div class="detail-wrapper">
+  <div class="detail-card">
+    <!-- Cabeçalho -->
+    <div class="detail-header">
+      <div class="thumb">
+        {% if produto.imagem %}
+          <img src="{{ produto.imagem.url }}" alt="{{ produto.nome_produto }}">
+        {% else %}
+          <span style="font-size:12px; color:#888;">Sem imagem</span>
+        {% endif %}
+      </div>
+      <div class="detail-title">
+        <h2>{{ produto.nome_produto }}</h2>
+        <div class="meta">
+          {{ produto.marca }} {% if produto.especie %}– {{ produto.especie }}{% endif %}
+        </div>
+      </div>
+
+      <div class="detail-actions">
+        {% if produto.ficha_tecnica %}
+          <a class="btn btn-outline" href="{{ produto.ficha_tecnica.url }}" target="_blank" rel="noopener">
+            Baixar ficha técnica
+          </a>
+        {% elif produto.ficha_tecnica_url %}
+          <a class="btn btn-outline" href="{{ produto.ficha_tecnica_url }}" target="_blank" rel="noopener">
+            Abrir ficha técnica
+          </a>
+        {% endif %}
+        <a class="btn btn-primary" href="{% url 'lista_produtos' %}">
+          Voltar à lista
+        </a>
+      </div>
+    </div>
+
+    <!-- Corpo: Viewer da Ficha Técnica -->
+    <div class="detail-body">
+      {% if produto.ficha_tecnica %}
+        {% with ft=produto.ficha_tecnica.url %}
+          {% if ft|lower|endswith:".pdf" %}
+            <div class="techsheet-viewer">
+              <iframe class="techsheet-frame" src="{{ ft }}"></iframe>
+            </div>
+          {% elif ft|lower|endswith:".jpg" or ft|lower|endswith:".jpeg" or ft|lower|endswith:".png" or ft|lower|endswith:".webp" %}
+            <div class="techsheet-viewer">
+              <img class="techsheet-img" src="{{ ft }}" alt="Ficha técnica - {{ produto.nome_produto }}">
+            </div>
+          {% else %}
+            <div class="empty-techsheet">
+              Não foi possível exibir a ficha técnica neste formato. Use o botão “Baixar ficha técnica”.
+            </div>
+          {% endif %}
+        {% endwith %}
+      {% elif produto.ficha_tecnica_url %}
+        {% with ft=produto.ficha_tecnica_url %}
+          {% if ft|lower|endswith:".pdf" %}
+            <div class="techsheet-viewer">
+              <iframe class="techsheet-frame" src="{{ ft }}"></iframe>
+            </div>
+          {% elif ft|lower|endswith:".jpg" or ft|lower|endswith:".jpeg" or ft|lower|endswith:".png" or ft|lower|endswith:".webp" %}
+            <div class="techsheet-viewer">
+              <img class="techsheet-img" src="{{ ft }}" alt="Ficha técnica - {{ produto.nome_produto }}">
+            </div>
+          {% else %}
+            <div class="empty-techsheet">
+              Não foi possível embutir a ficha técnica. Clique em “Abrir ficha técnica”.
+            </div>
+          {% endif %}
+        {% endwith %}
+      {% else %}
+        <div class="empty-techsheet">
+          Nenhuma ficha técnica cadastrada para este produto.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

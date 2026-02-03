@@ -58,46 +58,57 @@ class Linha(models.Model):
 
 
 class Produto(models.Model):
-    # id_produto é criado automaticamente pelo Django como 'id'
     nome_produto = models.CharField(max_length=200, verbose_name="Nome do Produto")
+
     marca = models.ForeignKey(
-        Marca, 
-        on_delete=models.PROTECT, 
+        Marca,
+        on_delete=models.PROTECT,
         related_name='produtos',
         verbose_name="Marca"
     )
     especie = models.ForeignKey(
-        Especie, 
-        on_delete=models.PROTECT, 
+        Especie,
+        on_delete=models.PROTECT,
         related_name='produtos',
         verbose_name="Espécie"
     )
     divisao = models.ForeignKey(
-        Divisao, 
-        on_delete=models.PROTECT, 
+        Divisao,
+        on_delete=models.PROTECT,
         related_name='produtos',
         verbose_name="Divisão"
     )
     linha = models.ForeignKey(
-        Linha, 
-        on_delete=models.PROTECT, 
+        Linha,
+        on_delete=models.PROTECT,
         related_name='produtos',
         verbose_name="Linha"
     )
+
+    # Imagem principal do produto
     imagem = models.ImageField(
-        upload_to='produtos/imagens/', 
-        blank=True, 
+        upload_to='produtos/imagens/',
+        blank=True,
         null=True,
-        verbose_name="Imagem"
+        verbose_name="Imagem do Produto"
     )
+
+    # NOVO CAMPO – Ficha técnica
+    ficha_tecnica_imagem = models.ImageField(
+        upload_to='produtos/ficha_tecnica/',
+        blank=True,
+        null=True,
+        verbose_name="Imagem da Ficha Técnica"
+    )
+
     ativo = models.BooleanField(default=True, verbose_name="Ativo")
     data_cadastro = models.DateTimeField(auto_now_add=True, verbose_name="Data de Cadastro")
     data_atualizacao = models.DateTimeField(auto_now=True, verbose_name="Data de Atualização")
-    
+
     class Meta:
         verbose_name = "Produto"
         verbose_name_plural = "Produtos"
         ordering = ['-data_cadastro']
-    
+
     def __str__(self):
         return f"{self.nome_produto} - {self.marca}"

@@ -285,6 +285,7 @@ class ProdutoAdmin(admin.ModelAdmin):
     list_filter = ('ativo', 'marca', 'especie', 'divisao', 'linha')
     search_fields = ('nome_produto', 'marca__nome')
     list_editable = ('ativo',)
+    fields = ('nome_produto', 'marca', 'especie', 'divisao', 'linha','imagem', 'ficha_tecnica_imagem','ativo')
     
     change_list_template = "produtos/produtos_changelist.html"
 
