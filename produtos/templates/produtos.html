@@ -1,158 +1,405 @@
 {% extends "base.html" %}
-{% block content %}
 
+{% block title %}Produtos{% endblock %}
+
+{% block extra_css %}
 <style>
-    :root {
-        --green-dark: #1f4f3a;
-        --green-main: #256a4b;
-        --gold: #d9a441;
-        --bg-light: #faf9f7;
-        --text-dark: #1d1d1d;
+  :root {
+    --green-dark: #1f4f3a;
+    --green-main: #256a4b;
+    --bg-light: #faf9f7;
+    --text-dark: #1d1d1d;
+    --card-radius: 14px;
+  }
+
+  body { background-color: var(--bg-light); }
+
+  .produtos-header {
+    padding: 2rem 0;
+    text-align: center;
+  }
+
+  .produtos-header h1 {
+    font-size: 2rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .produtos-header p {
+    color: #666;
+    font-size: 1.1rem;
+  }
+
+  .filters-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--card-radius);
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filter-group label {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .filter-group select,
+  .filter-group input {
+    padding: 0.625rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: white;
+  }
+
+  .filter-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+
+  .btn {
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary {
+    background: var(--green-main);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--green-dark);
+  }
+
+  .btn-secondary {
+    background: #e0e0e0;
+    color: #333;
+  }
+
+  .btn-secondary:hover {
+    background: #d0d0d0;
+  }
+
+  .produtos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .produto-card {
+    background: white;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .produto-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  }
+
+  .produto-image {
+    width: 100%;
+    height: 200px;
+    background: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .produto-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .produto-image-placeholder {
+    font-size: 4rem;
+    color: #ddd;
+  }
+
+  .produto-content {
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .produto-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .produto-meta {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.75rem;
+  }
+
+  .produto-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #e7f3ee;
+    color: var(--green-main);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .produto-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .btn-detalhes {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--green-main);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+  }
+
+  .btn-detalhes:hover {
+    background: var(--green-dark);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: var(--card-radius);
+  }
+
+  .empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  .empty-state h3 {
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-state p {
+    color: #666;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+
+  .pagination a,
+  .pagination span {
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-dark);
+  }
+
+  .pagination a:hover {
+    background: var(--green-main);
+    color: white;
+    border-color: var(--green-main);
+  }
+
+  .pagination .current {
+    background: var(--green-main);
+    color: white;
+    border-color: var(--green-main);
+  }
+
+  @media (max-width: 768px) {
+    .produtos-grid {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
     }
 
-    body {
-        background-color: var(--bg-light);
+    .filters-grid {
+      grid-template-columns: 1fr;
     }
-
-    /* ================= BUSCA ================= */
-    .search-container {
-        display: flex;
-        justify-content: center;
-        padding: 40px 20px 10px;
-    }
-
-    .search-container form {
-        display: flex;
-        gap: 10px;
-        width: 100%;
-        max-width: 500px;
-    }
-
-    .search-container input {
-        flex: 1;
-        padding: 12px 14px;
-        font-size: 15px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        outline: none;
-    }
-
-    .search-container button {
-        padding: 12px 20px;
-        background-color: var(--green-main);
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-    .search-container button:hover {
-        background-color: var(--green-dark);
-    }
-
-    /* ================= GRID ================= */
-    .produto-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 30px;
-        padding: 40px 80px 80px;
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-
-    /* ================= CARD ================= */
-    .produto-card {
-        background: #ffffff;
-        border-radius: 14px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-        padding: 25px;
-        text-align: left;
-        transition: transform .3s ease, box-shadow .3s ease;
-    }
-
-    .produto-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-        cursor: pointer;
-    }
-
-    .produto-tag {
-        display: inline-block;
-        background: var(--green-main);
-        color: #fff;
-        font-size: 11px;
-        padding: 4px 10px;
-        border-radius: 20px;
-        margin-bottom: 10px;
-    }
-
-    .produto-card img {
-        width: 100%;
-        height: 260px;
-        object-fit: contain;
-        margin-bottom: 15px;
-    }
-
-    .produto-card h3 {
-        font-size: 18px;
-        margin-bottom: 6px;
-        color: var(--text-dark);
-    }
-
-    .produto-card p {
-        font-size: 13px;
-        color: #555;
-    }
-
-    /* ================= EMPTY ================= */
-    .no-results {
-        grid-column: 1 / -1;
-        text-align: center;
-        font-size: 16px;
-        color: #777;
-        padding: 60px 0;
-    }
-
-    @media (max-width: 768px) {
-        .produto-grid {
-            padding: 30px 20px 60px;
-        }
-    }
+  }
 </style>
+{% endblock %}
 
-<!-- ================= BUSCA ================= -->
-<div class="search-container">
-    <form method="GET" action="{% url 'lista_produtos' %}">
-        <input
-            type="text"
-            name="search"
-            placeholder="Buscar produto..."
-            value="{{ request.GET.search }}"
-        >
-        <button type="submit">Buscar</button>
-    </form>
+{% block content %}
+<div class="produtos-header">
+  <h1>📦 Catálogo de Produtos</h1>
+  <p>Explore nosso portfólio completo</p>
 </div>
 
-<!-- ================= PRODUTOS ================= -->
-<div class="produto-grid">
-    {% if produtos %}
-        {% for produto in produtos %}
-            <div class="produto-card">
-                <span class="produto-tag">{{ produto.especie }}</span>
+<!-- Filtros -->
+<div class="filters-section">
+  <form method="get" action="{% url 'lista_produtos' %}">
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label for="busca">Buscar produto</label>
+        <input type="text" id="busca" name="q" placeholder="Nome do produto..." value="{{ request.GET.q }}">
+      </div>
 
-                <img
-                    src="{{ produto.imagem.url }}"
-                    alt="{{ produto.nome_produto }}"
-                >
+      <div class="filter-group">
+        <label for="marca">Marca</label>
+        <select id="marca" name="marca">
+          <option value="">Todas as marcas</option>
+          {% for marca in marcas %}
+            <option value="{{ marca.id }}" {% if request.GET.marca == marca.id|stringformat:"s" %}selected{% endif %}>
+              {{ marca.nome }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
 
-                <h3>{{ produto.nome_produto }}</h3>
-                <p>{{ produto.marca }} – {{ produto.especie }}</p>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p class="no-results">Nenhum produto encontrado.</p>
-    {% endif %}
+      <div class="filter-group">
+        <label for="especie">Espécie</label>
+        <select id="especie" name="especie">
+          <option value="">Todas as espécies</option>
+          {% for especie in especies %}
+            <option value="{{ especie.id }}" {% if request.GET.especie == especie.id|stringformat:"s" %}selected{% endif %}>
+              {{ especie.nome }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="divisao">Divisão</label>
+        <select id="divisao" name="divisao">
+          <option value="">Todas as divisões</option>
+          {% for divisao in divisoes %}
+            <option value="{{ divisao.id }}" {% if request.GET.divisao == divisao.id|stringformat:"s" %}selected{% endif %}>
+              {{ divisao.nome }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="linha">Linha</label>
+        <select id="linha" name="linha">
+          <option value="">Todas as linhas</option>
+          {% for linha in linhas %}
+            <option value="{{ linha.id }}" {% if request.GET.linha == linha.id|stringformat:"s" %}selected{% endif %}>
+              {{ linha.nome }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-actions">
+      <a href="{% url 'lista_produtos' %}" class="btn btn-secondary">Limpar Filtros</a>
+      <button type="submit" class="btn btn-primary">🔍 Buscar</button>
+    </div>
+  </form>
 </div>
 
+<!-- Grid de Produtos -->
+{% if produtos %}
+  <div class="produtos-grid">
+    {% for produto in produtos %}
+      <div class="produto-card">
+        <div class="produto-image">
+          {% if produto.imagem %}
+            <img src="{{ produto.imagem.url }}" alt="{{ produto.nome_produto }}">
+          {% else %}
+            <span class="produto-image-placeholder">📦</span>
+          {% endif %}
+        </div>
+
+        <div class="produto-content">
+          <h3 class="produto-title">{{ produto.nome_produto }}</h3>
+          <div class="produto-meta">
+            <strong>{{ produto.marca }}</strong>
+          </div>
+
+          <div class="produto-badges">
+            <span class="badge">{{ produto.especie }}</span>
+            <span class="badge">{{ produto.divisao }}</span>
+            <span class="badge">{{ produto.linha }}</span>
+          </div>
+
+          <div class="produto-footer">
+            <a href="{% url 'produto_detail' produto.pk %}" class="btn-detalhes">
+              Ver Detalhes →
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Paginação -->
+  {% if is_paginated %}
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page=1">« Primeira</a>
+        <a href="?page={{ page_obj.previous_page_number }}">‹ Anterior</a>
+      {% endif %}
+
+      <span class="current">
+        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Próxima ›</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Última »</a>
+      {% endif %}
+    </div>
+  {% endif %}
+{% else %}
+  <div class="empty-state">
+    <div class="empty-state-icon">🔍</div>
+    <h3>Nenhum produto encontrado</h3>
+    <p>Tente ajustar os filtros ou buscar por outro termo.</p>
+    <a href="{% url 'lista_produtos' %}" class="btn btn-primary" style="margin-top: 1rem;">Ver Todos os Produtos</a>
+  </div>
+{% endif %}
 {% endblock %}

@@ -93,7 +93,7 @@ class Produto(models.Model):
         verbose_name="Imagem do Produto"
     )
 
-    # NOVO CAMPO – Ficha técnica
+    # Ficha técnica
     ficha_tecnica_imagem = models.ImageField(
         upload_to='produtos/ficha_tecnica/',
         blank=True,
