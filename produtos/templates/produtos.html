@@ -7,27 +7,59 @@
   :root {
     --green-dark: #1f4f3a;
     --green-main: #256a4b;
+    --accent: #f59e0b;
+    --accent-dark: #d97706;
     --bg-light: #faf9f7;
     --text-dark: #1d1d1d;
     --card-radius: 14px;
   }
 
-  body { background-color: var(--bg-light); }
+  body { 
+    background-color: var(--bg-light); 
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Curva decorativa no topo */
+  .hero-wave {
+    position: relative;
+    background: var(--green-main);
+    height: 180px;
+    margin-bottom: 3rem;
+  }
+
+  .hero-wave::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background: var(--bg-light);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  }
 
   .produtos-header {
-    padding: 2rem 0;
+    position: relative;
+    z-index: 2;
+    padding: 3rem 0 2rem;
     text-align: center;
+    margin-top: -140px;
   }
 
   .produtos-header h1 {
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: var(--text-dark);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
   }
 
   .produtos-header p {
     color: #666;
     font-size: 1.1rem;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
   }
 
   .filters-section {
@@ -103,40 +135,65 @@
 
   .produtos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
     margin-bottom: 3rem;
+    padding: 0 1rem;
   }
 
   .produto-card {
-    background: white;
-    border-radius: var(--card-radius);
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: transform 0.2s, box-shadow 0.2s;
+    background: rgb(81, 8, 239);
+    border-radius: 16px;
+    overflow: visible;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
   .produto-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(216, 2, 2, 0.15);
+  }
+
+  /* Badge de categoria */
+  .category-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--green-main);
+    color: rgb(0, 0, 0);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(37, 106, 75, 0.4);
   }
 
   .produto-image {
     width: 100%;
-    height: 200px;
-    background: #f4f4f4;
+    height: 380px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #38a79a 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    border-radius: 16px 16px 0 0;
+    position: relative;
   }
 
   .produto-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: 85%;
+    height: 85%;
+    object-fit: contain;
+    transition: transform 0.3s;
+  }
+
+  .produto-card:hover .produto-image img {
+    transform: scale(1.05);
   }
 
   .produto-image-placeholder {
@@ -145,18 +202,26 @@
   }
 
   .produto-content {
-    padding: 1.25rem;
+    padding: 1.5rem;
     flex: 1;
     display: flex;
     flex-direction: column;
   }
 
   .produto-title {
-    font-size: 1.125rem;
-    font-weight: 600;
+    font-size: 1.25rem;
+    font-weight: 700;
     color: var(--text-dark);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     line-height: 1.3;
+  }
+
+  .produto-description {
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+    flex: 1;
   }
 
   .produto-meta {
@@ -175,7 +240,7 @@
   .badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
-    background: #e7f3ee;
+    background: #022b1a;
     color: var(--green-main);
     border-radius: 20px;
     font-size: 0.75rem;
@@ -188,23 +253,83 @@
     border-top: 1px solid #f0f0f0;
   }
 
-  .btn-detalhes {
-    width: 100%;
-    padding: 0.75rem;
-    background: var(--green-main);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-    text-align: center;
-    text-decoration: none;
-    display: block;
+  /* Simplified card styles */
+  .produto-card.card {
+    background: white;
+    border-radius: 16px;
+    overflow: visible;
+    padding: 0;
   }
 
-  .btn-detalhes:hover {
-    background: var(--green-dark);
+  .produto-card.card .card_title__container {
+    padding: 0;
+    margin-bottom: 1rem;
+  }
+
+  .produto-card.card .card_title__container .card_title {
+    font-size: 1.25rem;
+    color: var(--text-dark);
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .produto-card.card .card_title__container .card_paragraph {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+
+  /* Remover border animado */
+  .produto-card.card .card__border {
+    display: flex;
+  }
+
+  /* Simplificar a lista */
+  .produto-card.card .line {
+    display: none;
+  }
+
+  .produto-card.card .card__list { 
+    display: none;
+  }
+
+  /* BOTÃO VER DETALHES - Estilo da referência */
+  .produto-card.card .button {
+    cursor: pointer;
+    padding: 0.875rem 1.5rem;
+    font-weight: 700;
+    width: 100%;
+    font-size: 1rem;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ff8c42 0%, #ff6b35 100%);
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    margin-top: auto;
+  }
+
+  .produto-card.card .button:hover {
+    background: linear-gradient(135deg, #ff7a2e 0%, #ff5722 100%);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+    transform: translateY(-2px);
+  }
+
+  .produto-card.card .button:active {
+    transform: translateY(0);
+  }
+
+  @keyframes gradient-animation_2 {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
   }
 
   .empty-state {
@@ -271,9 +396,12 @@
 {% endblock %}
 
 {% block content %}
+<!-- Curva decorativa -->
+<div class="hero-wave"></div>
+
 <div class="produtos-header">
-  <h1>📦 Catálogo de Produtos</h1>
-  <p>Explore nosso portfólio completo</p>
+  <h1>Nosso Catálogo</h1>
+  <p>Produtos desenvolvidos com tecnologia de ponta para garantir a saúde e o desempenho ideal dos seus animais.</p>
 </div>
 
 <!-- Filtros -->
@@ -345,7 +473,10 @@
 {% if produtos %}
   <div class="produtos-grid">
     {% for produto in produtos %}
-      <div class="produto-card">
+      <div class="produto-card card">
+        <!-- Badge de categoria -->
+        <span class="category-badge">{{ produto.especie|default:"Produto" }}</span>
+
         <div class="produto-image">
           {% if produto.imagem %}
             <img src="{{ produto.imagem.url }}" alt="{{ produto.nome_produto }}">
@@ -355,22 +486,22 @@
         </div>
 
         <div class="produto-content">
-          <h3 class="produto-title">{{ produto.nome_produto }}</h3>
-          <div class="produto-meta">
-            <strong>{{ produto.marca }}</strong>
+          <div class="card_title__container">
+            <h3 class="card_title">{{ produto.nome_produto }}</h3>
+            <p class="card_paragraph">
+              {% if produto.divisao and produto.linha %}
+                {{ produto.divisao }} - {{ produto.linha }}
+              {% elif produto.divisao %}
+                {{ produto.divisao }}
+              {% elif produto.linha %}
+                {{ produto.linha }}
+              {% else %}
+                Produto desenvolvido com tecnologia de ponta para garantir qualidade e desempenho.
+              {% endif %}
+            </p>
           </div>
 
-          <div class="produto-badges">
-            <span class="badge">{{ produto.especie }}</span>
-            <span class="badge">{{ produto.divisao }}</span>
-            <span class="badge">{{ produto.linha }}</span>
-          </div>
-
-          <div class="produto-footer">
-            <a href="{% url 'produto_detail' produto.pk %}" class="btn-detalhes">
-              Ver Detalhes →
-            </a>
-          </div>
+          <a href="{% url 'produto_detail' produto.pk %}" class="button">Ver Detalhes</a>
         </div>
       </div>
     {% endfor %}
