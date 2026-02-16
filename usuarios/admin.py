@@ -15,6 +15,7 @@ class UserAdmin(BaseUserAdmin):
         urls = super().get_urls()
         custom_urls = [
             path('importar-csv/', self.importar_csv, name='user_importar_csv'),
+            path('reset-password/', self.reset_password_view, name='user_reset_password'),
         ]
         return custom_urls + urls
 
@@ -108,6 +109,34 @@ class UserAdmin(BaseUserAdmin):
         }
         return render(request, "admin/csv_form.html", context)
 
+
+    def reset_password_view(self, request):
+        if not request.user.is_superuser:
+            messages.error(request, "Acesso negado: somente superusuários podem resetar senhas.")
+            return redirect("..")
+
+        if request.method == "POST":
+            username = request.POST.get('username', '').strip()
+            new_password = request.POST.get('new_password', '').strip()
+
+            if not username or not new_password:
+                messages.error(request, "Por favor, preencha o username e a nova senha.")
+                return redirect(request.path)
+
+            try:
+                user = User.objects.get(username=username)
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, f"Senha do usuário '{username}' atualizada com sucesso.")
+            except User.DoesNotExist:
+                messages.error(request, f"Usuário '{username}' não encontrado.")
+
+            return redirect("..")
+
+        context = {
+            'title': 'Resetar senha de usuário',
+        }
+        return render(request, "admin/reset_password_form.html", context)
 
 # Desregistrar o UserAdmin padrão e registrar o customizado
 admin.site.unregister(User)
