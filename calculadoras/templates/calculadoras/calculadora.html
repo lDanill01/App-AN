@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Calculadora de Dieta para Ruminantes{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4">
+                <i class="fas fa-calculator"></i> Calculadora de Dieta para Ruminantes
+            </h1>
+            
+            <!-- Formulário -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Inserir Dados</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation">
+                        {% csrf_token %}
+                        
+                        <!-- Dados do Cliente -->
+                        <div class="alert alert-info" role="alert">
+                            <h6><strong>Dados do Cliente</strong></h6>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.nome_cliente }}
+                                {% if form.nome_cliente.errors %}
+                                    <div class="alert alert-danger mt-2">{{ form.nome_cliente.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.nome_fazenda }}
+                                {% if form.nome_fazenda.errors %}
+                                    <div class="alert alert-danger mt-2">{{ form.nome_fazenda.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Dados dos Animais -->
+                        <div class="alert alert-info" role="alert">
+                            <h6><strong>Dados dos Animais</strong></h6>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label>{{ form.quantidade_animais.label }}</label>
+                                {{ form.quantidade_animais }}
+                                {% if form.quantidade_animais.errors %}
+                                    <div class="alert alert-danger mt-2">{{ form.quantidade_animais.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <label>{{ form.peso_inicial.label }}</label>
+                                {{ form.peso_inicial }}
+                                {% if form.peso_inicial.errors %}
+                                    <div class="alert alert-danger mt-2">{{ form.peso_inicial.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <label>{{ form.peso_final.label }}</label>
+                                {{ form.peso_final }}
+                                {% if form.peso_final.errors %}
+                                    <div class="alert alert-danger mt-2">{{ form.peso_final.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label>{{ form.fator_ganho_peso.label }}</label>
+                            {{ form.fator_ganho_peso }}
+                            <small class="form-text text-muted d-block mt-2">
+                                Multiplicador para calcular o ganho de peso total. Por exemplo: 1.0, 1.5, 2.0
+                            </small>
+                            {% if form.fator_ganho_peso.errors %}
+                                <div class="alert alert-danger mt-2">{{ form.fator_ganho_peso.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Dados de Nutrientes (Opcional) -->
+                        <div class="alert alert-warning" role="alert">
+                            <h6><strong>Dados de Nutrientes (Opcional)</strong></h6>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label>{{ form.proteina.label }}</label>
+                                {{ form.proteina }}
+                            </div>
+                            <div class="col-md-4">
+                                <label>{{ form.energia.label }}</label>
+                                {{ form.energia }}
+                            </div>
+                            <div class="col-md-4">
+                                <label>{{ form.fibra.label }}</label>
+                                {{ form.fibra }}
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label>{{ form.carboidrato.label }}</label>
+                                {{ form.carboidrato }}
+                            </div>
+                            <div class="col-md-6">
+                                <label>{{ form.gordura.label }}</label>
+                                {{ form.gordura }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-calculator"></i> Calcular
+                            </button>
+                            <a href="{% url 'calculadora_list' %}" class="btn btn-secondary btn-lg ms-2">
+                                <i class="fas fa-list"></i> Ver Histórico
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Resultado -->
+            {% if resultado %}
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-check-circle"></i> Resultado do Cálculo</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>Cliente:</strong> {{ resultado.nome_cliente }}</p>
+                            <p><strong>Fazenda:</strong> {{ resultado.nome_fazenda }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Data/Hora:</strong> {% now "d/m/Y H:i" %}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <h6><strong>Dados dos Animais</strong></h6>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <p><strong>Quantidade:</strong> {{ resultado.quantidade_animais }} animais</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p><strong>Peso Inicial:</strong> {{ resultado.peso_inicial|floatformat:2 }} kg</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p><strong>Peso Final:</strong> {{ resultado.peso_final|floatformat:2 }} kg</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p><strong>Fator Ganho:</strong> {{ resultado.fator_ganho_peso|floatformat:2 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Resultados Principais -->
+                    <div class="card mb-4" style="border: 3px solid #28a745;">
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <h6 class="text-muted">Ganho de Peso Unitário</h6>
+                                    <h3 class="text-success">{{ resultado.ganho_peso_unitario|floatformat:2 }} kg</h3>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-muted">Resultado Final (Total)</h6>
+                                    <h2 class="text-success" style="font-weight: bold;">{{ resultado.resultado_final|floatformat:2 }} kg</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Nutrientes (se preenchidos) -->
+                    {% if resultado.proteina or resultado.energia or resultado.fibra or resultado.carboidrato or resultado.gordura %}
+                    <div class="alert alert-light border">
+                        <h6><strong>Dados de Nutrientes</strong></h6>
+                        <div class="row">
+                            {% if resultado.proteina %}
+                            <div class="col-md-4">
+                                <p><strong>Proteína:</strong> {{ resultado.proteina|floatformat:2 }}%</p>
+                            </div>
+                            {% endif %}
+                            {% if resultado.energia %}
+                            <div class="col-md-4">
+                                <p><strong>Energia:</strong> {{ resultado.energia|floatformat:2 }} Mcal</p>
+                            </div>
+                            {% endif %}
+                            {% if resultado.fibra %}
+                            <div class="col-md-4">
+                                <p><strong>Fibra:</strong> {{ resultado.fibra|floatformat:2 }}%</p>
+                            </div>
+                            {% endif %}
+                            {% if resultado.carboidrato %}
+                            <div class="col-md-4">
+                                <p><strong>Carboidrato:</strong> {{ resultado.carboidrato|floatformat:2 }}%</p>
+                            </div>
+                            {% endif %}
+                            {% if resultado.gordura %}
+                            <div class="col-md-4">
+                                <p><strong>Gordura:</strong> {{ resultado.gordura|floatformat:2 }}%</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mt-4">
+                        <button onclick="window.print()" class="btn btn-info">
+                            <i class="fas fa-print"></i> Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border-radius: 0.375rem;
+        border: 1px solid #dee2e6;
+    }
+    
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .btn {
+        border-radius: 0.375rem;
+    }
+    
+    .card {
+        border-radius: 0.375rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    
+    @media print {
+        .btn, form {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}

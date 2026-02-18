@@ -99,11 +99,11 @@
     </a>
 
     <!-- Card Calculadora de Dieta -->
-    <div class="card disabled">
+    <a href="{% url 'calculadora' %}" class="card">
         <div class="card-icon">🥗</div>
-        <h3>Calculadora de Dieta <span class="badge">Em breve</span></h3>
+        <h3>Calculadora de Dieta</h3>
         <p>Calcule necessidades nutricionais e planeje dietas personalizadas.</p>
-    </div>
+    </a>
 
     <!-- Card Usuários (apenas para superuser) -->
     {% if user.is_superuser %}

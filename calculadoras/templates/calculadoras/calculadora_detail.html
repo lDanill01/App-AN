@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detalhes - {{ calculadora.nome_cliente }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1><i class="fas fa-file-alt"></i> Detalhes do Cálculo</h1>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'calculadora_list' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+            <button onclick="window.print()" class="btn btn-info">
+                <i class="fas fa-print"></i> Imprimir
+            </button>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Dados Principais -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Informações do Cliente</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>Nome do Cliente:</strong></p>
+                            <h5>{{ calculadora.nome_cliente }}</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Nome da Fazenda:</strong></p>
+                            <h5>{{ calculadora.nome_fazenda }}</h5>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0">
+                        <strong>Data/Hora:</strong> {{ calculadora.data_criacao|date:"d/m/Y H:i" }}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Dados dos Animais -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Dados dos Animais</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <p class="text-muted mb-2">Quantidade</p>
+                                <h4>{{ calculadora.quantidade_animais }}</h4>
+                                <small class="text-muted">animais</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <p class="text-muted mb-2">Peso Inicial</p>
+                                <h4>{{ calculadora.peso_inicial|floatformat:2 }}</h4>
+                                <small class="text-muted">kg</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <p class="text-muted mb-2">Peso Final</p>
+                                <h4>{{ calculadora.peso_final|floatformat:2 }}</h4>
+                                <small class="text-muted">kg</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="text-center">
+                                <p class="text-muted mb-2">Fator Ganho</p>
+                                <h4>{{ calculadora.fator_ganho_peso|floatformat:2 }}</h4>
+                                <small class="text-muted">multiplicador</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Resultados -->
+            <div class="card mb-4" style="border: 3px solid #28a745;">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Resultados do Cálculo</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <p class="text-muted">Ganho de Peso Unitário</p>
+                            <h3 class="text-success">
+                                {{ calculadora.peso_final|add:calculadora.peso_inicial|floatformat:"-1" }}
+                            </h3>
+                            <p class="text-muted">
+                                ({{ calculadora.peso_final|floatformat:2 }} - {{ calculadora.peso_inicial|floatformat:2 }}) × {{ calculadora.fator_ganho_peso|floatformat:2 }}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-muted">Resultado Final (Total)</p>
+                            <h2 class="text-success" style="font-weight: bold;">
+                                {{ resultado_total|floatformat:2 }} kg
+                            </h2>
+                            <p class="text-muted">
+                                {{ quantidade_animais|default:calculadora.quantidade_animais }} animais × ganho unitário
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nutrientes -->
+            {% if calculadora.proteina or calculadora.energia or calculadora.fibra or calculadora.carboidrato or calculadora.gordura %}
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">Dados de Nutrientes</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% if calculadora.proteina %}
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <p class="text-muted mb-2">Proteína</p>
+                                <h5>{{ calculadora.proteina|floatformat:2 }}%</h5>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if calculadora.energia %}
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <p class="text-muted mb-2">Energia</p>
+                                <h5>{{ calculadora.energia|floatformat:2 }} Mcal</h5>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if calculadora.fibra %}
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <p class="text-muted mb-2">Fibra</p>
+                                <h5>{{ calculadora.fibra|floatformat:2 }}%</h5>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if calculadora.carboidrato %}
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <p class="text-muted mb-2">Carboidrato</p>
+                                <h5>{{ calculadora.carboidrato|floatformat:2 }}%</h5>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if calculadora.gordura %}
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <p class="text-muted mb-2">Gordura</p>
+                                <h5>{{ calculadora.gordura|floatformat:2 }}%</h5>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+        .btn, a {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
